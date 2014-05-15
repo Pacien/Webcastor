@@ -71,7 +71,12 @@ var Channel = {
 	},
 
 	open : function(name, password) {
-		var hashedPassword = imports.passwordHash.generate(password);
+		var hashedPassword
+		if (password === '') {
+			hashedPassword = 'none';
+		} else {
+			hashedPassword = imports.passwordHash.generate(password);
+		}
 		Server.db.set(name, hashedPassword);
 	},
 
@@ -123,7 +128,6 @@ var Server = {
 	},
 
 	connectToDb : function() {
-		console.log(params.database.server);
 		var redisURL = imports.url.parse(params.database.server);
 		console.log(redisURL);
 		var db = imports.redis.createClient(redisURL.port, redisURL.hostname, {
@@ -148,9 +152,6 @@ var Server = {
 
 		app.post('/', function(req, res) {
 			var password = req.body.password;
-			if (password === null) {
-				password = '';
-			}
 
 			var channelName = Channel.create(password);
 
@@ -176,15 +177,14 @@ var Server = {
 		Channel.getPassword(channel, function(hashedPassword) {
 
 			if (hashedPassword === null) {
-				console.log('Client joined and unknown channel');
+				console.log('Client joined an unknown channel');
 				return;
 			}
 
-			console.log(hashedPassword);
-
 			socket.join(channel);
 
-			if (!imports.passwordHash.verify(password, hashedPassword)) {
+			if (!imports.passwordHash.verify(password, hashedPassword)
+					&& hashedPassword !== 'none') {
 				console.log('Client joined ' + channel);
 				return;
 			}
