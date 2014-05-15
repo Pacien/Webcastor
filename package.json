@@ -1,0 +1,33 @@
+{
+  "name": "Webcastor",
+  "version": "0.1.0",
+  "description": "Webcastor",
+  "main": "webcastor.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified! Configure in package.json\" && exit 1"
+  },
+  "repository": "",
+  "keywords": [
+    "node.js",
+    "eclipse",
+    "nodeclipse"
+  ],
+  "author": "",
+  "license": "MIT",
+  "readmeFilename": "README.md",
+  "dependencies": {
+    "body-parser": "^1.1.1",
+    "express": "^4.1.2",
+    "hogan-express": "^0.5.2",
+    "http": "0.0.0",
+    "logfmt": "^1.1.2",
+    "password-hash": "^1.2.2",
+    "redis": "^0.10.1",
+    "socket.io": "^0.9.16",
+    "socket.io-wildcard": "^0.1.1",
+    "url": "^0.10.1"
+  },
+  "engines": {
+    "node": "0.10.x"
+  }
+}

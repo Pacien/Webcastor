@@ -1,0 +1,83 @@
+<h2>Test client</h2>
+
+<form>
+	<label for="channelField">Channel</label>
+	<input type="text" id="channelField">
+	<label for="passwordField">Password (optional)</label>
+	<input type="password" id="passwordField">
+	<input type="submit" value="Connect" id="connectButton">
+</form>
+<br>
+<form>
+	<label for="messageField">Message</label>
+	<input type="text" disabled id="messageField">
+	<input type="submit" value="Send" disabled id="sendButton">
+</form>
+
+<hr>
+<span>Log</span>
+<pre id="console"></pre>
+
+ <script src="/socket.io/socket.io.js"></script>
+<script type="text/javascript">
+	var console = document.getElementById("console");
+
+	function println(str) {
+		console.innerHTML = str + "\n" + console.innerHTML;
+	}
+
+	function changeControlState(connected) {
+		socketConnected = connected;
+		channelField.disabled = connected;
+		passwordField.disabled = connected;
+		if (connected) {
+			connectButton.value = "Disconnect";
+		} else {
+			connectButton.value = "Connect";
+		}
+
+		messageField.disabled = !connected;
+		sendButton.disabled = !connected;
+	}
+
+	var socket;
+	var socketConnected = false;
+
+	function connectSocket(channel, password) {
+		socket = io.connect("/", {
+			"query" : "channel=" + channel + "&password=" + password,
+			"force new connection" : true
+		});
+
+		socket.on("connect", function() {
+			changeControlState(true);
+			println("connected");
+		});
+
+		socket.on("disconnect", function() {
+			changeControlState(false);
+			println("disconnected");
+		});
+
+		socket.on("message", function(message) {
+			println(message);
+		});
+	}
+
+
+	connectButton.addEventListener("click", function(event) {
+		event.preventDefault();
+		if (socketConnected) {
+			socket.disconnect();
+		} else {
+			connectSocket(channelField.value, passwordField.value);
+		}
+	});
+
+	sendButton.addEventListener("click", function(event) {
+		event.preventDefault();
+		socket.emit("message", messageField.value);
+		messageField.value = "";
+	});
+
+</script>

@@ -1,0 +1,31 @@
+<h2>Create a channel</h2>
+
+<form method="post" action="/">
+	<label for="passwordField">Password (optional)</label>
+	<input type="password"  id="passwordField" name="password">
+	<input type="submit" id="randomButton" value="Generate random password">
+	<input type="submit" value="Create a new channel">
+</form>
+
+<br>
+<hr>
+
+<a href="/client">Test client</a> - <a href="https://github.com/Pacien/Webcastor">Sources</a>
+
+<script type="text/javascript">
+	randomButton.addEventListener("click", function(event) {
+		event.preventDefault();
+
+		var randomPassword = Math.random().toString(36).substr(2, 10);
+
+		passwordField.type = "text";
+		passwordField.value = randomPassword;
+	});
+
+	passwordField.addEventListener("input", function(event) {
+		if (passwordField.value.length <= 1) {
+			passwordField.type = "password";
+		}
+	});
+
+</script>

@@ -1,0 +1,28 @@
+<h2>Create a channel</h2>
+
+<h3>Channel created with given password</h3>
+
+<form>
+	<label for="channel">Channel ID</label>
+	<input type="text" value="{{channel}}" readonly id="channel">
+	<br>
+	<label for="url">URL</label>
+	<input type="text" value="{{url}}" readonly id="url">
+</form>
+
+<style type="text/css">
+	label {
+		display: inline-block;
+		width: 100px;
+	}
+</style>
+
+<script type="text/javascript">
+	channel.addEventListener("click", function(event) {
+		this.select();
+	});
+	
+	url.addEventListener("click", function(event) {
+		this.select();
+	});
+</script>
