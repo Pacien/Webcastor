@@ -29,6 +29,7 @@ var imports = {
 	redis : require('redis'),
 
 	passwordHash : require('password-hash'),
+	uuid : require('node-uuid'),
 };
 
 var params = {
@@ -69,7 +70,7 @@ var Channel = {
 	},
 
 	open : function(name, password) {
-		var hashedPassword
+		var hashedPassword;
 		if (password === '') {
 			hashedPassword = 'none';
 		} else {
@@ -79,12 +80,7 @@ var Channel = {
 	},
 
 	generateUniqueName : function() {
-		var uniqueName;
-		while (uniqueName === this.previousName) {
-			uniqueName = (+new Date()).toString(36).toUpperCase();
-		}
-		this.previousName = uniqueName;
-		return uniqueName;
+		return imports.uuid.v1();
 	},
 
 	getPassword : function(name, callback) {
