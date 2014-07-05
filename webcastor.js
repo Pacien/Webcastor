@@ -159,7 +159,7 @@ var Server = {
 
 			res.render('channel', {
 				channel : channelName,
-				url : req.protocol + '://' + req.host + '/' + channelName,
+				url : req.protocol + '://' + req.host + '/',
 			});
 		});
 
