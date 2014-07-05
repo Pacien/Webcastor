@@ -25,7 +25,6 @@ var imports = {
 	hogan : require('hogan-express'),
 
 	socketio : require('socket.io'),
-	socketioWildcard : require('socket.io-wildcard'),
 
 	redis : require('redis'),
 
@@ -34,8 +33,7 @@ var imports = {
 
 var params = {
 	database : {
-		persistent : process.env.REDISCLOUD_URL !== undefined
-				&& process.env.REDISCLOUD_URL !== null,
+		persistent : process.env.REDISCLOUD_URL !== undefined && process.env.REDISCLOUD_URL !== null,
 		server : process.env.REDISCLOUD_URL,
 	},
 
@@ -106,8 +104,7 @@ var Server = {
 
 		this.app = this.createApp();
 		this.server = imports.http.createServer(this.app);
-		this.io = imports.socketioWildcard(imports.socketio)
-				.listen(this.server);
+		this.io = imports.socketio.listen(this.server);
 
 		this.addHandlers(this.app, this.io);
 
@@ -183,15 +180,14 @@ var Server = {
 
 			socket.join(channel);
 
-			if (!imports.passwordHash.verify(password, hashedPassword)
-					&& hashedPassword !== 'none') {
+			if (!imports.passwordHash.verify(password, hashedPassword) && hashedPassword !== 'none') {
 				console.log('Client joined ' + channel);
 				return;
 			}
 
 			console.log('Broadcaster joined ' + channel);
 
-			socket.on('*', function(event) {
+			socket.on('message', function(event) {
 				Server.broadcast(socket, channel, event);
 			});
 		});
@@ -202,13 +198,11 @@ var Server = {
 
 		var messageSize = encodeURI(JSONmessage).split(/%..|./).length - 1;
 		if (messageSize > params.messageSizeLimit) {
-			console.log('Not broadcasting ' + JSONmessage + ' (' + messageSize
-					+ ' bytes)');
+			console.log('Not broadcasting ' + JSONmessage + ' (' + messageSize + ' bytes)');
 			return;
 		}
 
-		console.log('Broadcasting ' + JSONmessage + ' (' + messageSize
-				+ ' bytes)');
+		console.log('Broadcasting ' + JSONmessage + ' (' + messageSize + ' bytes)');
 		socket.broadcast.to(channel).emit(event.name, event.args);
 	},
 };
