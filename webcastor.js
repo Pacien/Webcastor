@@ -205,8 +205,8 @@ var Server = {
 			return;
 		}
 
-		console.log('Broadcasting ' + JSONmessage + ' (' + messageSize + ' bytes)');
-		socket.broadcast.to(channel).emit(event.name, event.args);
+		console.log('Broadcasting ' + JSONmessage + ' (' + messageSize + ' bytes) on channel ' + channel);
+		socket.broadcast.to(channel).send(event);
 	},
 };
 
