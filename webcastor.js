@@ -115,7 +115,10 @@ var Server = {
 		var app = imports.express();
 
 		app.use(imports.logfmt.requestLogger());
-		app.use(imports.bodyParser());
+		app.use(imports.bodyParser.json());
+		app.use(imports.bodyParser.urlencoded({
+			extended : true,
+		}));
 		app.set('view engine', 'html');
 		app.set('layout', 'layout');
 		app.enable('view cache');
