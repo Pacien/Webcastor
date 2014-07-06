@@ -147,7 +147,7 @@ var Server = {
 		});
 
 		app.post('/', function(req, res) {
-			var password = req.body.password;
+			var password = req.body.password !== undefined ? req.body.password : '';
 
 			var channelName = Channel.create(password);
 
