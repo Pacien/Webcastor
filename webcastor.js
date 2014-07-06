@@ -173,22 +173,33 @@ var Server = {
 		Channel.getPassword(channel, function(hashedPassword) {
 
 			if (hashedPassword === null) {
-				console.log('Client joined an unknown channel');
+				console.log('Client tried to join an unknown channel');
+				socket.emit('unknown_channel');
 				return;
 			}
 
 			socket.join(channel);
 
-			if (!imports.passwordHash.verify(password, hashedPassword) && hashedPassword !== 'none') {
+			if (password === undefined) {
+
 				console.log('Client joined ' + channel);
-				return;
+
+			} else {
+
+				if (hashedPassword === 'none' || imports.passwordHash.verify(password, hashedPassword)) {
+					console.log('Broadcaster joined ' + channel);
+					socket.emit("authenticated");
+
+					socket.on('message', function(event) {
+						Server.broadcast(socket, channel, event);
+					});
+				} else {
+					console.log('Authentication error on channel ' + channel);
+					socket.emit('authentication_error');
+				}
+
 			}
 
-			console.log('Broadcaster joined ' + channel);
-
-			socket.on('message', function(event) {
-				Server.broadcast(socket, channel, event);
-			});
 		});
 	},
 

@@ -5,6 +5,8 @@
 	<input type="text" id="channelField">
 	<label for="passwordField">Password (optional)</label>
 	<input type="password" id="passwordField">
+	<input type="checkbox" id="usePassword">
+	<label for="usePassword">Use password</label>
 	<input type="submit" value="Connect" id="connectButton">
 </form>
 <br>
@@ -43,9 +45,9 @@
 	var socket;
 	var socketConnected = false;
 
-	function connectSocket(channel, password) {
+	function connectSocket(channel, password, authenticate) {
 		socket = io.connect("/", {
-			"query" : "channel=" + channel + "&password=" + password,
+			"query" : "channel=" + channel + ( authenticate ? "&password=" + password : ""),
 			"force new connection" : true
 		});
 
@@ -59,6 +61,20 @@
 			println("disconnected");
 		});
 
+		socket.on("unknown_channel", function() {
+			changeControlState(false);
+			println("unknown_channel");
+		});
+
+		socket.on("authentication_error", function() {
+			changeControlState(false);
+			println("authentication_error");
+		});
+
+		socket.on("authenticated", function() {
+			println("authenticated");
+		});
+
 		socket.on("message", function(message) {
 			println(message);
 		});
@@ -70,7 +86,7 @@
 		if (socketConnected) {
 			socket.disconnect();
 		} else {
-			connectSocket(channelField.value, passwordField.value);
+			connectSocket(channelField.value, passwordField.value, usePassword.checked);
 		}
 	});
 
