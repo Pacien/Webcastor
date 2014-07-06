@@ -25,7 +25,7 @@
 	var console = document.getElementById("console");
 
 	function println(str) {
-		console.innerHTML = str + "\n" + console.innerHTML;
+		console.insertBefore(document.createTextNode(str + "\n"), console.firstChild);
 	}
 
 	function changeControlState(connected) {
